@@ -9,8 +9,8 @@ interface ICachedModel {
     val valueCls: KClass<*>
 }
 
-inline fun <reified T: Any> ICachedModel.fromCache(key: String, updateFun: ()->T) : T {
-    if(cache.contains(key)) {
+inline fun <reified T : Any> ICachedModel.fromCache(key: String, updateFun: () -> T): T {
+    if (cache.contains(key)) {
         return (cache.get(key) as CachedValue<T>).data
     }
     val value = updateFun()

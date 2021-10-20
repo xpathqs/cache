@@ -14,7 +14,7 @@ import kotlin.reflect.full.memberProperties
 open class PersistentCache<V>(
     private var filePath: String = "",
     private val mapper: ObjectMapper = jacksonObjectMapper()
-): Cache<String,V>() {
+) : Cache<String, V>() {
     data class SerializedValue(
         val key: Any,
         val value: Any?,
@@ -28,19 +28,19 @@ open class PersistentCache<V>(
     }
 
     fun toSerializedValue() =
-       map.map { (k,v) ->
-           SerializedValue(
-               key = k!!,
-               value = v,
-               valueWrapperCls = v!!::class.java.name,
-               valueCls = (v as CachedValue<*>).data!!::class.java.name
-           )
-       }
+        map.map { (k, v) ->
+            SerializedValue(
+                key = k,
+                value = v,
+                valueWrapperCls = v!!::class.java.name,
+                valueCls = (v as CachedValue<*>).data!!::class.java.name
+            )
+        }
 
     fun save() {
         val sb = StringBuilder()
         toSerializedValue().forEach {
-            sb.append( mapper.writeValueAsString(it) + "\n")
+            sb.append(mapper.writeValueAsString(it) + "\n")
         }
         File(filePath).writeText(sb.toString())
     }
@@ -48,7 +48,7 @@ open class PersistentCache<V>(
     @Suppress("PrintStackTrace", "TooGenericExceptionCaught")
     fun load() {
         map.clear()
-        if(!File(filePath).isFile) {
+        if (!File(filePath).isFile) {
             return
         }
         try {
@@ -86,17 +86,17 @@ open class PersistentCache<V>(
         cls.memberProperties
             .filterIsInstance<KMutableProperty<*>>()
             .filter {
-            it.name != CachedValue<*>::data.name
-                    && !it.name.contains("$")
+                it.name != CachedValue<*>::data.name
+                        && !it.name.contains("$")
             }.forEach {
-                it.setter.call (v, getObjFromNode(value.get(it.name)))
+                it.setter.call(v, getObjFromNode(value.get(it.name)))
             }
 
         map[key] = v
     }
 
     fun getCls(clsName: String): Class<*> {
-        if(clsName.startsWith("[L")) {
+        if (clsName.startsWith("[L")) {
             val cn = clsName.drop(2).dropLast(1)
             val cls = this::class.java.classLoader.loadClass(cn)
             return newInstance(cls, 0).javaClass
@@ -108,11 +108,21 @@ open class PersistentCache<V>(
 
     fun getObjFromNode(v: JsonNode, custom: (() -> Any)? = null): Any {
         return when (v) {
-            is TextNode -> {v.asText()}
-            is IntNode -> {v.asInt()}
-            is LongNode -> {v.asLong()}
-            is DoubleNode -> {v.asDouble()}
-            is BooleanNode -> {v.asBoolean()}
+            is TextNode -> {
+                v.asText()
+            }
+            is IntNode -> {
+                v.asInt()
+            }
+            is LongNode -> {
+                v.asLong()
+            }
+            is DoubleNode -> {
+                v.asDouble()
+            }
+            is BooleanNode -> {
+                v.asBoolean()
+            }
             else -> {
                 custom!!()
             }

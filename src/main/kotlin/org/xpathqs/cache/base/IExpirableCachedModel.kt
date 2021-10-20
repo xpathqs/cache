@@ -11,21 +11,22 @@ interface IExpirableCachedModel {
     val expValueCls: KClass<*>
 }
 
-inline fun <reified T: Any> IExpirableCachedModel.fromCache(
+inline fun <reified T : Any> IExpirableCachedModel.fromCache(
     key: String,
     liveTime: Duration,
-    updateFun: ()->T) = fromCache(key, liveTime, false, updateFun)
+    updateFun: () -> T
+) = fromCache(key, liveTime, false, updateFun)
 
-inline fun <reified T: Any> IExpirableCachedModel.fromCache(
+inline fun <reified T : Any> IExpirableCachedModel.fromCache(
     key: String,
     liveTime: Duration,
     updateInitTime: Boolean,
-    updateFun: ()->T
-) : T {
-    if(expCache.contains(key)) {
+    updateFun: () -> T
+): T {
+    if (expCache.contains(key)) {
         val v = (expCache.get(key) as IExpirable)
-        if(v.isValid()) {
-            if(updateInitTime) {
+        if (v.isValid()) {
+            if (updateInitTime) {
                 v.refresh()
                 expCache.put(key, v as CachedValue<Any>)
             }

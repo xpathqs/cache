@@ -3,7 +3,6 @@ package org.xpathqs.cache.base
 import org.xpathqs.cache.impl.CachedModel
 import org.xpathqs.cache.impl.ExpiredCachedModel
 import org.xpathqs.cache.impl.PersistentCache
-import org.xpathqs.cache.value.CachedValue
 import java.time.Duration
 
 data class SomeComplexVal(
@@ -12,7 +11,7 @@ data class SomeComplexVal(
     val v3: String = ""
 )
 
-object SomeData : ICachedModel by CachedModel() , IExpirableCachedModel by ExpiredCachedModel(
+object SomeData : ICachedModel by CachedModel(), IExpirableCachedModel by ExpiredCachedModel(
     expCache = PersistentCache("test.json")
 ) {
     val id: String
@@ -45,19 +44,19 @@ object SomeData : ICachedModel by CachedModel() , IExpirableCachedModel by Expir
 
 fun main() {
 
-   // SomeData.id2
+    // SomeData.id2
 
     (SomeData.expCache as PersistentCache<*>).load()
-   /* val cache = PersistentCache<CachedValue<Any>>("test.json")
-    cache.load()*/
+    /* val cache = PersistentCache<CachedValue<Any>>("test.json")
+     cache.load()*/
 
     println(SomeData.id4)
 
-  //  SomeData.id2
-  //  SomeData.id3
+    //  SomeData.id2
+    //  SomeData.id3
 
-  //  Thread.sleep(3000)
+    //  Thread.sleep(3000)
 
-  //  SomeData.id2
+    //  SomeData.id2
 }
 
